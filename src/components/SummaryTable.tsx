@@ -123,7 +123,7 @@ const SortHeadCell = ({
   direction: string;
   hideSortIcon: boolean;
   align: string;
-  onClick: any;
+  onClick: (event: React.MouseEvent<unknown>, direction: Order) => void;
 }) => {
   const classes = useSortHeadCellStyles({
     hideSortIcon,
