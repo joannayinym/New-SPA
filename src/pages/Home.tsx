@@ -1,32 +1,15 @@
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core";
 import { FormControl, Select, MenuItem } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
 import SummaryTable from "../components/SummaryTable";
-import { DATA } from "./data";
-
-export enum SelectType {
-  category = "category",
-  type = "type",
-  date = "date",
-}
-
-export interface StatementDetail {
-  id: string;
-  type: string;
-  category: string;
-  amount: number;
-  balance: number;
-  transaction_date: string;
-  day_sequence: number;
-}
-
-export interface SummaryData {
-  key: string;
-  amount: number;
-  balance: number;
-}
+import { SelectType, StatementDetail } from "../types/types";
+import { filterDataBySelection } from "../utils/dataFunction";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: "#f8f9f9",
+    paddingBottom: 32,
+  },
   container: {
     maxWidth: 750,
     margin: "auto",
@@ -38,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     display: "block",
     margin: theme.spacing(1),
-    // minWidth: 120,
     width: 200,
     "& .MuiInputBase-input": {
       width: 200,
@@ -73,62 +55,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const filterDataBySelection = ({
-  selection,
-}: {
-  selection: keyof StatementDetail;
-}) => {
-  const originData = DATA as StatementDetail[];
-  const result = originData.reduce(
-    (acc: Record<string, SummaryData>, v: StatementDetail) => {
-      const { amount, balance } = v;
-      let key: string = "";
-      if ((selection as string) === "date") {
-        const dateString = v["transaction_date"].slice(0, 10);
-        if (dateString) {
-          key = dateString.split("-").reverse().join("-");
-        }
-      } else {
-        key = v[selection] as string;
-      }
-      if (!key) {
-        key = "Unknown";
-      }
-      const previousValue = acc[key];
-      if (previousValue) {
-        return {
-          ...acc,
-          [key]: {
-            key,
-            amount: previousValue.amount + amount,
-            balance: previousValue.balance + balance,
-          },
-        };
-      }
-
-      return {
-        ...acc,
-        [key]: { key, amount, balance },
-      };
-    },
-    {} as Record<string, SummaryData>
-  );
-
-  return Object.values(result);
-};
-
 const Home = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const classes = useStyles();
   const [selectOptions, setSelectOptions] = useState<SelectType>(
     SelectType.category
   );
-
-  const handleSelectionChanged = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    setSelectOptions(event.target.value as SelectType);
-  };
 
   useEffect(() => {
     const filteredData = filterDataBySelection({
@@ -138,13 +70,18 @@ const Home = () => {
   }, [selectOptions]);
 
   return (
-    <div style={{ backgroundColor: "#f8f9f9", paddingBottom: 32 }}>
+    <div className={classes.root}>
       <div className={classes.titleWrapper}>
         <div className={classes.title}>Summary of bank statement</div>
       </div>
       <div className={classes.container}>
         <FormControl variant="outlined" className={classes.formControl}>
-          <Select value={selectOptions} onChange={handleSelectionChanged}>
+          <Select
+            value={selectOptions}
+            onChange={(event) => {
+              setSelectOptions(event.target.value as SelectType);
+            }}
+          >
             <MenuItem value={SelectType.type}>{SelectType.type}</MenuItem>
             <MenuItem value={SelectType.category}>
               {SelectType.category}

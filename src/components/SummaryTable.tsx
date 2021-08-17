@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,7 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { SummaryData } from "../pages";
+import { SummaryData } from "../types/types";
 
 type Data = SummaryData;
 
@@ -62,9 +62,16 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
   return stabilizedThis.map((el) => el[0]);
 }
 
+interface StyleInterface {
+  hideSortIcon: boolean;
+  align: string;
+  active: boolean;
+  direction: string;
+}
+
 const useSortHeadCellStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: (props: any) => ({
+    root: (props: StyleInterface) => ({
       display: "flex",
       alignItems: "center",
       cursor: props.hideSortIcon ? "auto" : "pointer",
@@ -79,29 +86,25 @@ const useSortHeadCellStyles = makeStyles((theme: Theme) =>
     iconBox: {
       maxHeight: 12,
     },
-    upIcon: (props: any) => ({
-      marginLeft: 5,
+    upIcon: (props: StyleInterface) => ({
+      marginLeft: 15,
       width: 0,
       height: 0,
       borderLeft: "12px solid transparent",
       borderRight: "12px solid transparent",
-      borderBottom: `8px solid ${
-        props.active && props.direction === "desc"
-          ? "#1781eb"
-          : "rgba(0, 0, 0, 0.48)"
+      borderBottom: `10px solid ${
+        props.active && props.direction === "desc" ? "#1781eb" : "#e0e0e0"
       }`,
     }),
-    downIcon: (props: any) => ({
+    downIcon: (props: StyleInterface) => ({
       marginTop: 3,
-      marginLeft: 5,
+      marginLeft: 15,
       width: 0,
       height: 0,
       borderLeft: "12px solid transparent",
       borderRight: "12px solid transparent",
-      borderTop: `8px solid ${
-        props.active && props.direction === "asc"
-          ? "#1781eb"
-          : "rgba(0, 0, 0, 0.48)"
+      borderTop: `10px solid ${
+        props.active && props.direction === "asc" ? "#1781eb" : "#e0e0e0"
       }`,
     }),
   })
@@ -131,7 +134,7 @@ const SortHeadCell = ({
 
   return (
     <div className={classes.root}>
-      <div>{title}</div>
+      <div style={{ fontSize: "1.2rem" }}>{title}</div>
 
       {!hideSortIcon && (
         <div style={{ display: "inline-block" }}>
@@ -146,15 +149,7 @@ const SortHeadCell = ({
             onClick={(e) => {
               onClick(e, "asc");
             }}
-          >
-            {/* <ArrowDropDownIcon
-              className={
-                active && direction === "desc"
-                  ? classes.activeIcon
-                  : classes.inactiveIcon
-              }
-            /> */}
-          </div>
+          ></div>
         </div>
       )}
     </div>
@@ -342,6 +337,7 @@ export default function SummaryTable({
                     </TableRow>
                   );
                 })}
+
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
