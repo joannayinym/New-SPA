@@ -8,8 +8,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { SummaryData } from "../pages";
 
 type Data = SummaryData;
@@ -85,10 +83,10 @@ const useSortHeadCellStyles = makeStyles((theme: Theme) =>
       marginLeft: 5,
       width: 0,
       height: 0,
-      borderLeft: "15px solid transparent",
-      borderRight: "15px solid transparent",
+      borderLeft: "12px solid transparent",
+      borderRight: "12px solid transparent",
       borderBottom: `8px solid ${
-        props.active && props.direction === "asc"
+        props.active && props.direction === "desc"
           ? "#1781eb"
           : "rgba(0, 0, 0, 0.48)"
       }`,
@@ -98,10 +96,10 @@ const useSortHeadCellStyles = makeStyles((theme: Theme) =>
       marginLeft: 5,
       width: 0,
       height: 0,
-      borderLeft: "15px solid transparent",
-      borderRight: "15px solid transparent",
+      borderLeft: "12px solid transparent",
+      borderRight: "12px solid transparent",
       borderTop: `8px solid ${
-        props.active && props.direction === "desc"
+        props.active && props.direction === "asc"
           ? "#1781eb"
           : "rgba(0, 0, 0, 0.48)"
       }`,
@@ -140,21 +138,13 @@ const SortHeadCell = ({
           <div
             className={classes.upIcon}
             onClick={(e) => {
-              onClick(e, "asc");
+              onClick(e, "desc");
             }}
-          >
-            {/* <ArrowDropUpIcon
-              className={
-                active && direction === "asc"
-                  ? classes.activeIcon
-                  : classes.inactiveIcon
-              }
-            /> */}
-          </div>
+          ></div>
           <div
             className={classes.downIcon}
             onClick={(e) => {
-              onClick(e, "desc");
+              onClick(e, "asc");
             }}
           >
             {/* <ArrowDropDownIcon
